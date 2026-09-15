@@ -54,11 +54,11 @@ export default function WeatherPage() {
             <p>Temperature: {c.temperature}°C (feels like {c.feelslike}°C)</p>
             <p>Wind: {c.wind_speed} km/h {c.wind_dir}</p>
             <p>Humidity: {c.humidity}%</p>
-            {latency!=0? (
+            {typeof latency === "number" && latency > 0 ? (
               <p style={{ fontSize: "12px", color: "gray", marginTop: "8px" }}>
                 Latency: {latency}ms | Cache Hit: {String(hit)}
               </p>
-            ): <span style={{ fontSize: "12px", color: "gray", marginTop: "8px" }}>Data store in cache</span>}
+            ) : <span style={{ fontSize: "12px", color: "gray", marginTop: "8px" }}>Data stored in cache</span>}
           </div>
         )}
       
