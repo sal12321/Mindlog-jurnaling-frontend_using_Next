@@ -1,0 +1,68 @@
+
+"use client";
+import { useState } from "react";
+import { getWeather } from "../../lib/api";
+import Navbar from "../Navbar";
+
+export default function WeatherPage() {
+  const [city, setCity] = useState("Jharkhand");
+  const [data, setData] = useState(null); // You renamed this to response
+  const [error, setError] = useState("");
+
+  async function fetchWeather() {
+    setError("");
+    setData(null);
+    
+    await getWeather(city).then((res) => {
+      console.log("these are response ");
+      console.log(res);
+      console.log(res.data);
+      console.log(res.data?.durationMs);
+      console.log(res.data?.hit);
+      
+      if (res.ok) {
+        console.log("inside response.ok");
+        setData(res); // FIX 2: Changed from setData(res) to setResponse(res)
+      } else {
+        setError("city not found");
+      }
+    });
+  }
+
+  const c = data?.data?.data?.current; 
+  const l = data?.data?.data?.location;
+  const hit = data?.data?.hit;
+  const latency = data?.data?.durationMs;
+
+  return (
+    <>
+      <Navbar />
+      <div className="container">
+        <h1>Weather</h1>
+        <div className="form-group" style={{ flexDirection: "row", gap: 8 }}>
+          <input value={city} onChange={(e) => setCity(e.target.value)} placeholder="Enter city name" />
+          <button className="btn" onClick={fetchWeather}>Get Weather</button>
+        </div>
+
+        {error && <div className="error">{error}</div>}
+
+
+        {c && l && (
+          <div className="entry-card" style={{ marginTop: 16 }}>
+            <h2>{l.name}, {l.country}</h2>
+            <p>{c.weather_descriptions?.[0]}</p>
+            <p>Temperature: {c.temperature}°C (feels like {c.feelslike}°C)</p>
+            <p>Wind: {c.wind_speed} km/h {c.wind_dir}</p>
+            <p>Humidity: {c.humidity}%</p>
+            {latency!=0? (
+              <p style={{ fontSize: "12px", color: "gray", marginTop: "8px" }}>
+                Latency: {latency}ms | Cache Hit: {String(hit)}
+              </p>
+            ): <span style={{ fontSize: "12px", color: "gray", marginTop: "8px" }}>Data store in cache</span>}
+          </div>
+        )}
+      
+      </div>
+    </>
+  );
+}
