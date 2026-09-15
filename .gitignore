@@ -1,2 +1,10 @@
-node_modules/
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
 .env.*
+
+
+# next.js
+/.next/
+/out/
