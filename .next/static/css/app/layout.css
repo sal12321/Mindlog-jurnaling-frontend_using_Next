@@ -239,6 +239,18 @@ textarea { resize: vertical; min-height: 100px; }
   max-height: 75px;
   overflow: scroll;
   background-color: #fff;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.edit-dlt-admin{
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+
+
 }
 .entry-date { font-size: 0.78rem; color: var(--ink-soft); margin-bottom: 6px; }
 .entry-content {
@@ -319,6 +331,8 @@ overflow: scroll;
   z-index: 999;
   font-size: 0.9rem;
 }
+
+
 
 /* ---------- Small screens ---------- */
 @media (max-width: 480px) {
