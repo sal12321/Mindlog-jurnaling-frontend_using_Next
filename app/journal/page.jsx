@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { ClipLoader } from "react-spinners";
 import {
   getAuthToken,
   getAllEntries,
@@ -19,6 +20,7 @@ export default function JournalPage() {
   const [loadError, setLoadError] = useState("");
   const [showNew, setShowNew] = useState(false);
   const [editing, setEditing] = useState(null); // entry object being edited, or null
+  const [loading, setLoading] = useState(true);
 
   const [form, setForm] = useState({ title: "", content: "", sentiment: "" });
 
@@ -31,11 +33,19 @@ export default function JournalPage() {
   }, [router]);
 
   async function loadEntries() {
+    setLoading(true)
     const { ok, data } = await getAllEntries();
     if (ok) {
+      setLoading(false);
+      if(entries.length !== 0 ){
+        setEditing
+      }
       setEntries(Array.isArray(data) ? data : []);
     } else {
       setLoadError("Failed to load entries");
+      setLoading(false);
+      
+
     }
   }
 
@@ -52,7 +62,6 @@ export default function JournalPage() {
     const { ok } = await createEntry(entry);
     if (ok) {
       setShowNew(false);
-      loadEntries();
     } else {
       alert("Failed to create entry");
     }
@@ -101,10 +110,17 @@ export default function JournalPage() {
           </div>
         </div>
 
+
         {loadError && <div className="error">{loadError}</div>}
 
+              {loading && (
+        <div style={{ display: "flex", justifyContent: "center", padding: "2rem" }}>
+          <ClipLoader color="#2563eb" size={45} />
+        </div>
+      )}
+
         <div className="entries-grid">
-          {entries.length === 0 && !loadError && <div>No entries yet. Create your first journal entry!</div>}
+          {entries.length === 0 && !loadError && !loading && <div>No entries yet. Create your first journal entry!</div>}
           {entries.map((entry) => (
             <div className={`entry-card ${entry.sentiment ? `sentiment-${entry.sentiment}` : ""}`} key={entry.id}>
               <div className="entry-title">{entry.title}</div>

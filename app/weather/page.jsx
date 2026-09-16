@@ -3,25 +3,24 @@
 import { useState } from "react";
 import { getWeather } from "../../lib/api";
 import Navbar from "../Navbar";
+import { ClipLoader } from "react-spinners";
 
 export default function WeatherPage() {
   const [city, setCity] = useState("Jharkhand");
   const [data, setData] = useState(null); // You renamed this to response
   const [error, setError] = useState("");
+  const[loading, setLoading] = useState(false);
 
   async function fetchWeather() {
+    setLoading(true);
     setError("");
     setData(null);
     
     await getWeather(city).then((res) => {
-      console.log("these are response ");
-      console.log(res);
-      console.log(res.data);
-      console.log(res.data?.durationMs);
-      console.log(res.data?.hit);
+
       
       if (res.ok) {
-        console.log("inside response.ok");
+        setLoading(false);
         setData(res); // FIX 2: Changed from setData(res) to setResponse(res)
       } else {
         setError("city not found");
@@ -37,6 +36,8 @@ export default function WeatherPage() {
   return (
     <>
       <Navbar />
+
+
       <div className="container">
         <h1>Weather</h1>
         <div className="form-group" style={{ flexDirection: "row", gap: 8 }}>
@@ -44,7 +45,13 @@ export default function WeatherPage() {
           <button className="btn" onClick={fetchWeather}>Get Weather</button>
         </div>
 
-        {error && <div className="error">{error}</div>}
+        {error && !loading && <div className="error">{error}</div>}
+
+              {loading && !error && (
+        <div style={{ display: "flex", justifyContent: "center", padding: "2rem" }}>
+          <ClipLoader color="#2563eb" size={45} />
+        </div>
+      )}
 
 
         {c && l && (
