@@ -39,6 +39,7 @@ export default function WeatherPage() {
 
 
       <div className="container">
+       <a  href="/journal"> Back to journal</a>
         <h1>Weather</h1>
         <div className="form-group" style={{ flexDirection: "row", gap: 8 }}>
           <input value={city} onChange={(e) => setCity(e.target.value)} placeholder="Enter city name" />

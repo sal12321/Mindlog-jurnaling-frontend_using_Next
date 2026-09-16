@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getAuthToken, getIsAdmin, getAllUsers, createAdmin } from "../../lib/api";
+import { ClipLoader } from "react-spinners";
 import Navbar from "../Navbar";
 
 export default function AdminPage() {
@@ -10,6 +11,7 @@ export default function AdminPage() {
   const [showModal, setShowModal] = useState(false);
   const [form, setForm] = useState({ userName: "", password: "", email: "", sentimentAnalysis: false });
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!getAuthToken()) {
@@ -23,9 +25,21 @@ export default function AdminPage() {
     loadUsers();
   }, [router]);
 
-  async function loadUsers() {
-    const { ok, data } = await getAllUsers();
-    if (ok) setUsers(Array.isArray(data) ? data : []);
+async function loadUsers() {
+    setLoading(true);
+    setError("");
+    try {
+      const { ok, data } = await getAllUsers();
+      if (ok) {
+        setUsers(Array.isArray(data) ? data : []);
+      } else {
+        setError("Failed to fetch users");
+      }
+    } catch (err) {
+      setError("Failed to fetch users");
+    } finally {
+      setLoading(false);
+    }
   }
 
   async function submitCreateAdmin(e) {
@@ -43,6 +57,7 @@ export default function AdminPage() {
   return (
     <>
       <Navbar />
+
       <div className="container">
         <div className="journal-header">
           <h1>Admin Panel</h1>
@@ -52,20 +67,27 @@ export default function AdminPage() {
             <button className="btn btn-outline" onClick={loadUsers}>Refresh Users</button>
           </div>
         </div>
-
-        <div className="entries-grid">
-          {users.length === 0 && <div>No users found</div>}
-          {users.map((user, i) => (
-            <div className="entry-card" key={user.id?.timestamp ?? i}>
-              <div className="entry-title">{user.userName}</div>
-              <div className="entry-content">
-                <strong>Email:</strong> {user.email || "N/A"}<br />
-                <strong>Roles:</strong> {user.roles ? user.roles.join(", ") : "USER"}<br />
-                <strong>Sentiment Analysis:</strong> {String(user.sentimentAnalysis ?? "false")}
-              </div>
-            </div>
-          ))}
+           {loading && (
+        <div style={{ display: "flex", justifyContent: "center", padding: "2rem" }}>
+          <ClipLoader color="#2563eb" size={45} />
         </div>
+      )}
+        <div className="entries-grid">
+          
+
+    {!loading && !error && users.length === 0 && <div>No users found</div>}
+
+    {users.map((user, i) => (
+      <div className="entry-card" key={user.id?.timestamp ?? user.id ?? i}>
+        <div className="entry-title">{user.userName}</div>
+        <div className="entry-content">
+          <strong>Email:</strong> {user.email || "N/A"}<br />
+          <strong>Roles:</strong> {user.roles ? user.roles.join(", ") : "USER"}<br />
+          <strong>Sentiment Analysis:</strong> {String(user.sentimentAnalysis ?? "false")}
+        </div>
+      </div>
+    ))}
+  </div>
       </div>
 
       <div className={`modal ${showModal ? "active" : ""}`}>
