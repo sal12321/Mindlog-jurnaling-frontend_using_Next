@@ -76,12 +76,12 @@ export default function WeatherPage() {
             </p>
             <p>Humidity: {c.humidity}%</p>
             {typeof latency === "number" && latency > 0 ? (
-              <p style={{ fontSize: "12px", color: "gray", marginTop: "8px" }}>
-                Latency: {latency}ms | Cache Hit: {String(hit)} | CACHING : REDIS 
+              <p style={{ fontSize: "15px", color: "gray", marginTop: "8px" }}>
+               <strong>Caching : REDIS</strong> |  Latency: {latency}ms | Cache Hit: {String(hit)} 
               </p>
             ) : (
               <span
-                style={{ fontSize: "12px", color: "gray", marginTop: "8px" }}
+                style={{ fontSize: "15px", color: "gray", marginTop: "8px" }}
               >
                 Data stored in cache
               </span>
