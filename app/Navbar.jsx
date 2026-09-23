@@ -25,7 +25,7 @@ export default function Navbar() {
         {userName && <span style={{ marginRight: 12 }}>Welcome, {userName}!</span>}
         {isAdmin && <a href="/admin">Admin Panel</a>}
         <a href="/weather">Weather</a>
-        <a href="http://localhost:8080/swagger-ui/index.html" target="_blank">API Docs</a>
+        <a href="https://mindlog-journaling.duckdns.org/api/" target="_blank">API Docs</a>
         <button onClick={logout}>Logout</button>
       </div>
     </nav>
